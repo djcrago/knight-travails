@@ -65,7 +65,11 @@ function knightMoves(startLocation, endLocation) {
   const start = findSquare(startLocation, chessBoard);
   const end = findSquare(endLocation, chessBoard);
 
-  const path = findPathController(start, end);
+  let path = [];
+
+  //   const possiblePaths = findPossiblePaths(start);
+
+  //   function findPath(possiblePaths, end) {}
 
   //   console.log(`You made it in ${path.length} moves! Here's your path:`);
   //   path.forEach((position) => {
@@ -75,40 +79,43 @@ function knightMoves(startLocation, endLocation) {
   return path;
 }
 
-function findPathController(start, end) {
-  let possiblePaths = {};
-  for (let i = 1; i <= 6; i += 1) {
-    possiblePaths[`level${i}`] = [];
-  }
+// function findPossiblePaths(start) {
+//   let possiblePaths = {};
 
-  possiblePaths.level1 = start.neighbors;
-  for (let j = 2; j <= 6; j += 1) {
-    let currentLevel = possiblePaths[`level${j}`];
-    let previousLevel = possiblePaths[`level${j - 1}`];
-    let ancestorLevel = possiblePaths[`level${j - 2}`];
+//   // A knight can reach any other square it at-most six moves
+//   for (let i = 1; i <= 6; i += 1) {
+//     possiblePaths[`level${i}`] = [];
+//   }
 
-    if (ancestorLevel) {
-      previousLevel.forEach((previousSquare) => {
-        previousSquare.neighbors.forEach((neighbor) => {
-          let repeat = false;
-          ancestorLevel.forEach((ancestorSquare) => {
-            if (neighbor === ancestorSquare) {
-              repeat = true;
-            }
-          });
-          if (!repeat) currentLevel.push(neighbor);
-        });
-      });
-    } else {
-      previousLevel.forEach((previousSquare) => {
-        previousSquare.neighbors.forEach((neighbor) => {
-          currentLevel.push(neighbor);
-        });
-      });
-    }
-  }
+//   possiblePaths.level1 = start.neighbors;
+//   for (let j = 2; j <= 6; j += 1) {
+//     let currentLevel = possiblePaths[`level${j}`];
+//     let previousLevel = possiblePaths[`level${j - 1}`];
+//     let ancestorLevel = possiblePaths[`level${j - 2}`];
 
-  console.log(possiblePaths);
-}
+//     if (ancestorLevel) {
+//       previousLevel.forEach((previousSquare) => {
+//         previousSquare.neighbors.forEach((neighbor) => {
+//           let repeat = false;
+//           ancestorLevel.forEach((ancestorSquare) => {
+//             if (neighbor === ancestorSquare) {
+//               repeat = true;
+//             }
+//           });
+//           if (!repeat) currentLevel.push(neighbor);
+//         });
+//       });
+//     } else {
+//       previousLevel.forEach((previousSquare) => {
+//         previousSquare.neighbors.forEach((neighbor) => {
+//           currentLevel.push(neighbor);
+//         });
+//       });
+//     }
+//   }
 
-const shortestPath = knightMoves([0, 0], [0, 5]);
+//   return possiblePaths;
+// }
+
+const shortestPath = knightMoves([0, 0], [3, 0]);
+console.log(shortestPath);
