@@ -83,11 +83,29 @@ function findPathController(start, end) {
 
   possiblePaths.level1 = start.neighbors;
   for (let j = 2; j <= 6; j += 1) {
-    let previousLevel = possiblePaths[`level${j - 1}`];
     let currentLevel = possiblePaths[`level${j}`];
-    previousLevel.forEach((previousLevelNeighbor) => {
-      currentLevel.push(...previousLevelNeighbor.neighbors);
-    });
+    let previousLevel = possiblePaths[`level${j - 1}`];
+    let ancestorLevel = possiblePaths[`level${j - 2}`];
+
+    if (ancestorLevel) {
+      previousLevel.forEach((previousSquare) => {
+        previousSquare.neighbors.forEach((neighbor) => {
+          let repeat = false;
+          ancestorLevel.forEach((ancestorSquare) => {
+            if (neighbor === ancestorSquare) {
+              repeat = true;
+            }
+          });
+          if (!repeat) currentLevel.push(neighbor);
+        });
+      });
+    } else {
+      previousLevel.forEach((previousSquare) => {
+        previousSquare.neighbors.forEach((neighbor) => {
+          currentLevel.push(neighbor);
+        });
+      });
+    }
   }
 
   console.log(possiblePaths);
