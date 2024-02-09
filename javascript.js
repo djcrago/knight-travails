@@ -69,49 +69,44 @@ function knightMoves(startLocation, endLocation) {
 
   const possiblePaths = findPossiblePaths(start);
 
-  function findPath(possiblePaths, end) {
-    let pathInOrder;
+  let pathInOrder;
 
-    for (let i = 1; i <= 6; i += 1) {
-      let currentLevel = possiblePaths[`level${i}`];
-      currentLevel.forEach((square) => {
-        if (square.location === end.location) {
-          let pathInReverse = [];
-          let currentSquare = square;
+  for (let i = 1; i <= 6; i += 1) {
+    let currentLevel = possiblePaths[`level${i}`];
+    currentLevel.forEach((square) => {
+      if (square.location === end.location) {
+        let pathInReverse = [];
+        let currentSquare = square;
 
-          pathInReverse.push(currentSquare);
+        pathInReverse.push(currentSquare);
 
-          while (currentSquare.previous) {
-            pathInReverse.push(currentSquare.previous);
-            currentSquare = currentSquare.previous;
-          }
-
-          if (pathInReverse.length === 0) {
-            pathInReverse.push(currentSquare);
-          }
-          pathInReverse.push(start);
-
-          pathInOrder = [];
-
-          for (let j = pathInReverse.length; j > 0; j -= 1) {
-            pathInOrder.push(pathInReverse[j - 1]);
-          }
+        while (currentSquare.previous) {
+          pathInReverse.push(currentSquare.previous);
+          currentSquare = currentSquare.previous;
         }
-      });
-    }
-    return pathInOrder;
+
+        if (pathInReverse.length === 0) {
+          pathInReverse.push(currentSquare);
+        }
+        pathInReverse.push(start);
+
+        pathInOrder = [];
+
+        for (let j = pathInReverse.length; j > 0; j -= 1) {
+          pathInOrder.push(pathInReverse[j - 1]);
+        }
+      }
+    });
   }
 
-  const shortestPath = findPath(possiblePaths, end);
-
   console.log(
-    `You made it in ${shortestPath.length - 1} moves! Here's your path:`
+    `You made it in ${pathInOrder.length - 1} moves! Here's your path:`
   );
-  shortestPath.forEach((square) => {
+  pathInOrder.forEach((square) => {
     console.log(square.location);
   });
 
-  return shortestPath;
+  return pathInOrder;
 }
 
 function findPossiblePaths(start) {
