@@ -60,62 +60,100 @@ function findSquare([x, y], chessBoard) {
 
 function knightMoves(startLocation, endLocation) {
   const chessBoard = makeBoard();
-  console.log(chessBoard);
 
   const start = findSquare(startLocation, chessBoard);
   const end = findSquare(endLocation, chessBoard);
 
-  let path = [];
+  if (!start || !end)
+    return console.log('Must have valid start and valid end locations');
 
-  //   const possiblePaths = findPossiblePaths(start);
+  const possiblePaths = findPossiblePaths(start);
 
-  //   function findPath(possiblePaths, end) {}
+  function findPath(possiblePaths, end) {
+    let pathInOrder;
 
-  //   console.log(`You made it in ${path.length} moves! Here's your path:`);
-  //   path.forEach((position) => {
-  //     console.log(position.location);
-  //   });
+    for (let i = 1; i <= 6; i += 1) {
+      let currentLevel = possiblePaths[`level${i}`];
+      currentLevel.forEach((square) => {
+        if (square.location === end.location) {
+          let pathInReverse = [];
+          let currentSquare = square;
 
-  return path;
+          pathInReverse.push(currentSquare);
+
+          while (currentSquare.previous) {
+            pathInReverse.push(currentSquare.previous);
+            currentSquare = currentSquare.previous;
+          }
+
+          if (pathInReverse.length === 0) {
+            pathInReverse.push(currentSquare);
+          }
+          pathInReverse.push(start);
+
+          pathInOrder = [];
+
+          for (let j = pathInReverse.length; j > 0; j -= 1) {
+            pathInOrder.push(pathInReverse[j - 1]);
+          }
+        }
+      });
+    }
+    return pathInOrder;
+  }
+
+  const shortestPath = findPath(possiblePaths, end);
+
+  console.log(
+    `You made it in ${shortestPath.length - 1} moves! Here's your path:`
+  );
+  shortestPath.forEach((square) => {
+    console.log(square.location);
+  });
+
+  return shortestPath;
 }
 
-// function findPossiblePaths(start) {
-//   let possiblePaths = {};
+function findPossiblePaths(start) {
+  let possiblePaths = {};
 
-//   // A knight can reach any other square it at-most six moves
-//   for (let i = 1; i <= 6; i += 1) {
-//     possiblePaths[`level${i}`] = [];
-//   }
+  // A knight can reach any other square it at-most six moves
+  for (let i = 1; i <= 6; i += 1) {
+    possiblePaths[`level${i}`] = [];
+  }
 
-//   possiblePaths.level1 = start.neighbors;
-//   for (let j = 2; j <= 6; j += 1) {
-//     let currentLevel = possiblePaths[`level${j}`];
-//     let previousLevel = possiblePaths[`level${j - 1}`];
-//     let ancestorLevel = possiblePaths[`level${j - 2}`];
+  possiblePaths.level1 = start.neighbors;
+  for (let j = 2; j <= 6; j += 1) {
+    let currentLevel = possiblePaths[`level${j}`];
+    let previousLevel = possiblePaths[`level${j - 1}`];
+    let ancestorLevel = possiblePaths[`level${j - 2}`];
 
-//     if (ancestorLevel) {
-//       previousLevel.forEach((previousSquare) => {
-//         previousSquare.neighbors.forEach((neighbor) => {
-//           let repeat = false;
-//           ancestorLevel.forEach((ancestorSquare) => {
-//             if (neighbor === ancestorSquare) {
-//               repeat = true;
-//             }
-//           });
-//           if (!repeat) currentLevel.push(neighbor);
-//         });
-//       });
-//     } else {
-//       previousLevel.forEach((previousSquare) => {
-//         previousSquare.neighbors.forEach((neighbor) => {
-//           currentLevel.push(neighbor);
-//         });
-//       });
-//     }
-//   }
+    if (ancestorLevel) {
+      previousLevel.forEach((previousSquare) => {
+        previousSquare.neighbors.forEach((neighbor) => {
+          let repeat = false;
+          ancestorLevel.forEach((ancestorSquare) => {
+            if (neighbor.location === ancestorSquare.location) {
+              repeat = true;
+            }
+          });
+          if (!repeat) {
+            neighbor.previous = previousSquare;
+            currentLevel.push(neighbor);
+          }
+        });
+      });
+    } else {
+      previousLevel.forEach((previousSquare) => {
+        previousSquare.neighbors.forEach((neighbor) => {
+          neighbor.previous = previousSquare;
+          currentLevel.push(neighbor);
+        });
+      });
+    }
+  }
 
-//   return possiblePaths;
-// }
+  return possiblePaths;
+}
 
-const shortestPath = knightMoves([0, 0], [3, 0]);
-console.log(shortestPath);
+const shortestPath = knightMoves([0, 0], [5, 5]);
